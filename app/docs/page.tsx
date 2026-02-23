@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import ApiIcon from "@mui/icons-material/Api";
 import CodeIcon from "@mui/icons-material/Code";
+import WebhookIcon from "@mui/icons-material/Webhook";
 import Link from "next/link";
 
 const docCards = [
@@ -23,6 +24,12 @@ const docCards = [
     description: "Complete reference for the ocmem daemon REST API — memories, search, and chat.",
     href: "/docs/api",
     icon: <ApiIcon sx={{ fontSize: 36 }} />,
+  },
+  {
+    title: "Hooks",
+    description: "Lifecycle hooks that make memory automatic — extract facts, save sessions, inject context.",
+    href: "/docs/hooks",
+    icon: <WebhookIcon sx={{ fontSize: 36 }} />,
   },
   {
     title: "Examples",
