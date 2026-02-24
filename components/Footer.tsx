@@ -67,10 +67,13 @@ export default function Footer() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, opacity: 0.7 }}>
               <Box
                 component="img"
-                src="https://webimages.mongodb.com/_com_assets/cms/kuyjf3vea2hg34taa-horizontal_default_slate_blue.svg"
+                src="/images/mongodb-icon.svg"
                 alt="MongoDB"
                 sx={{ height: 24 }}
               />
+              <Typography variant="body2" color="text.secondary" sx={{ fontSize: "0.8rem" }}>
+                Built on MongoDB Atlas
+              </Typography>
             </Box>
           </Grid>
           {footerSections.map((section) => (
