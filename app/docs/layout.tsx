@@ -22,7 +22,7 @@ import ArchitectureIcon from "@mui/icons-material/Architecture";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const sidebarItems = [
@@ -40,6 +40,12 @@ const SIDEBAR_WIDTH = 260;
 
 function Sidebar({ onItemClick }: { onItemClick?: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleNavigation = (href: string) => {
+    router.push(href);
+    onItemClick?.();
+  };
 
   return (
     <Box sx={{ py: 3 }}>
@@ -55,9 +61,7 @@ function Sidebar({ onItemClick }: { onItemClick?: () => void }) {
           return (
             <ListItem key={item.href} disablePadding>
               <ListItemButton
-                component={Link}
-                href={item.href}
-                onClick={onItemClick}
+                onClick={() => handleNavigation(item.href)}
                 selected={isActive}
                 sx={{
                   mx: 1,

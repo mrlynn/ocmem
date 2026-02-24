@@ -477,15 +477,15 @@ export default function DashboardPage() {
           <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
             Start the memory daemon and explore all 6 pages at localhost:3002
           </Typography>
-          <Button
-            variant="contained"
-            size="large"
-            component={Link}
-            href="/docs/getting-started"
-            endIcon={<LaunchIcon />}
-          >
-            Get Started
-          </Button>
+          <Link href="/docs/getting-started" passHref style={{ textDecoration: 'none' }}>
+            <Button
+              variant="contained"
+              size="large"
+              endIcon={<LaunchIcon />}
+            >
+              Get Started
+            </Button>
+          </Link>
         </CardContent>
       </Card>
     </Box>

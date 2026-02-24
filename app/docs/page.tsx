@@ -53,21 +53,19 @@ export default function DocsPage() {
         {docCards.map((card) => (
           <Grid key={card.title} size={{ xs: 12, sm: 6, md: 4 }}>
             <Card elevation={0} sx={{ height: "100%" }}>
-              <CardActionArea
-                component={Link}
-                href={card.href}
-                sx={{ height: "100%", p: 0 }}
-              >
-                <CardContent sx={{ p: 3 }}>
-                  <Box sx={{ color: "primary.main", mb: 2 }}>{card.icon}</Box>
-                  <Typography variant="h4" sx={{ mb: 1 }}>
-                    {card.title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    {card.description}
-                  </Typography>
-                </CardContent>
-              </CardActionArea>
+              <Link href={card.href} passHref style={{ textDecoration: 'none', color: 'inherit' }}>
+                <CardActionArea sx={{ height: "100%", p: 0 }}>
+                  <CardContent sx={{ p: 3 }}>
+                    <Box sx={{ color: "primary.main", mb: 2 }}>{card.icon}</Box>
+                    <Typography variant="h4" sx={{ mb: 1 }}>
+                      {card.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {card.description}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Link>
             </Card>
           </Grid>
         ))}
