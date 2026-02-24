@@ -12,9 +12,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { brand } from "@/lib/theme";
 
-const installCommands = `npm install -g @openclaw-memory/cli
-ocmem init
-ocmem start`;
+const installCommands = `openclaw plugins install openclaw-memory
+openclaw gateway start
+# Daemon auto-starts on port 7654`;
 
 export default function Installation() {
   const [copied, setCopied] = useState(false);
@@ -83,46 +83,57 @@ export default function Installation() {
             }}
           >
             <Box component="span" sx={{ color: "text.secondary" }}>
-              # Install the CLI{"\n"}
+              # Install OpenClaw Memory plugin{"\n"}
             </Box>
             <br />
             <Box component="span" sx={{ color: "text.secondary" }}>
               ${" "}
             </Box>
             <Box component="span" sx={{ color: "primary.main" }}>
-              npm install -g @openclaw-memory/cli
-            </Box>
-            <br />
-            <br />
-            <Box component="span" sx={{ color: "text.secondary" }}>
-              # Initialize your config{"\n"}
-            </Box>
-            <br />
-            <Box component="span" sx={{ color: "text.secondary" }}>
-              ${" "}
-            </Box>
-            <Box component="span" sx={{ color: "primary.main" }}>
-              ocmem init
+              openclaw plugins install openclaw-memory
             </Box>
             <br />
             <Box component="span" sx={{ color: brand.springGreen, opacity: 0.8 }}>
-              {">"} Created ~/.ocmem/config.json
+              {">"} ✓ Installed openclaw-memory
             </Box>
             <br />
             <br />
             <Box component="span" sx={{ color: "text.secondary" }}>
-              # Start the memory daemon{"\n"}
+              # Configure MongoDB & Voyage AI{"\n"}
             </Box>
             <br />
             <Box component="span" sx={{ color: "text.secondary" }}>
               ${" "}
             </Box>
             <Box component="span" sx={{ color: "primary.main" }}>
-              ocmem start
+              export MONGODB_URI=your-connection-string
+            </Box>
+            <br />
+            <Box component="span" sx={{ color: "text.secondary" }}>
+              ${" "}
+            </Box>
+            <Box component="span" sx={{ color: "primary.main" }}>
+              export VOYAGE_API_KEY=your-api-key
+            </Box>
+            <br />
+            <br />
+            <Box component="span" sx={{ color: "text.secondary" }}>
+              # Start the gateway (daemon auto-starts){"\n"}
+            </Box>
+            <br />
+            <Box component="span" sx={{ color: "text.secondary" }}>
+              ${" "}
+            </Box>
+            <Box component="span" sx={{ color: "primary.main" }}>
+              openclaw gateway start
             </Box>
             <br />
             <Box component="span" sx={{ color: brand.springGreen }}>
-              {">"} Memory daemon running on port 3456
+              {">"} Memory daemon running on port 7654
+            </Box>
+            <br />
+            <Box component="span" sx={{ color: brand.springGreen }}>
+              {">"} Connected to MongoDB Atlas
             </Box>
           </Box>
         </Box>

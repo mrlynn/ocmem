@@ -39,32 +39,73 @@
 
 ## Quick Start
 
+### Installation Options
+
+**Option 1: OpenClaw Plugin (Recommended)**
 ```bash
-# Install the CLI
-npm install -g @openclaw-memory/cli
+# Install plugin for OpenClaw agents
+openclaw plugins install openclaw-memory
 
-# Initialize configuration
-ocmem init
+# Configure in ~/.openclaw/openclaw.json
+{
+  "plugins": {
+    "entries": {
+      "openclaw-memory": {
+        "enabled": true,
+        "config": {
+          "daemonUrl": "http://localhost:7654",
+          "agentId": "openclaw"
+        }
+      }
+    }
+  }
+}
 
-# Start the memory daemon
-ocmem start
+# Daemon auto-starts with OpenClaw gateway
+openclaw gateway start
 ```
 
-The daemon runs at `http://localhost:3456`. Store your first memory:
+**Option 2: Docker**
+```bash
+git clone https://github.com/mrlynn/openclaw-mongodb-memory.git
+cd openclaw-mongodb-memory
+docker compose up -d
+```
+
+**Option 3: Local Development**
+```bash
+git clone https://github.com/mrlynn/openclaw-mongodb-memory.git
+cd openclaw-mongodb-memory
+pnpm install && pnpm build
+pnpm dev:daemon
+```
+
+The daemon runs at `http://localhost:7654` (configurable via `MEMORY_DAEMON_PORT`).
+
+### API Examples
+
+Store your first memory:
 
 ```bash
-curl -X POST http://localhost:3456/api/memories \
+curl -X POST http://localhost:7654/remember \
   -H "Content-Type: application/json" \
   -d '{
-    "content": "The user prefers dark mode and uses VS Code.",
-    "metadata": { "source": "onboarding", "agent": "assistant" }
+    "agentId": "openclaw",
+    "text": "The user prefers dark mode and uses VS Code.",
+    "tags": ["preference", "editor"]
   }'
 ```
 
 Search by meaning:
 
 ```bash
-curl "http://localhost:3456/api/memories/search?q=editor+preferences&limit=5"
+curl "http://localhost:7654/recall?agentId=openclaw&query=editor+preferences&limit=5"
+```
+
+Delete a memory:
+
+```bash
+curl -X DELETE "http://localhost:7654/forget/MEMORY_ID"
 ```
 
 See the full [Getting Started guide](https://ocmem.com/docs/getting-started) for prerequisites and configuration.

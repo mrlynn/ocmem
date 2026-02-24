@@ -69,7 +69,8 @@ export default function ApiReferencePage() {
         API Reference
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-        The ocmem daemon exposes a REST API on <code>http://localhost:3456</code> by default.
+        The ocmem daemon exposes a REST API on <code>http://localhost:7654</code> by default
+        (configurable via <code>MEMORY_DAEMON_PORT</code>).
       </Typography>
       <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
         All endpoints accept and return JSON. Memory content is automatically embedded using Voyage
@@ -84,53 +85,35 @@ export default function ApiReferencePage() {
 
       <Endpoint
         method="POST"
-        path="/api/memories"
-        description="Store a new memory. The content is automatically embedded for vector search."
+        path="/remember"
+        description="Store a new memory. The text is automatically embedded for vector search using Voyage AI."
         body={`{
-  "content": "The user prefers dark mode and uses VS Code.",
-  "metadata": {
-    "source": "onboarding",
-    "agent": "assistant"
-  }
+  "agentId": "openclaw",
+  "text": "The user prefers dark mode and uses VS Code.",
+  "tags": ["preference", "editor"],
+  "ttl": 2592000
 }`}
         response={`{
+  "success": true,
   "id": "65f1a2b3c4d5e6f7a8b9c0d1",
-  "content": "The user prefers dark mode and uses VS Code.",
-  "metadata": { "source": "onboarding", "agent": "assistant" },
+  "text": "The user prefers dark mode and uses VS Code.",
+  "tags": ["preference", "editor"],
   "createdAt": "2024-03-13T10:30:00.000Z"
 }`}
       />
 
       <Endpoint
         method="GET"
-        path="/api/memories"
-        description="List all memories, sorted by creation date (newest first). Supports pagination with skip and limit query parameters."
-        response={`{
-  "memories": [
-    {
-      "id": "65f1a2b3c4d5e6f7a8b9c0d1",
-      "content": "The user prefers dark mode...",
-      "metadata": { "source": "onboarding" },
-      "createdAt": "2024-03-13T10:30:00.000Z"
-    }
-  ],
-  "total": 142,
-  "skip": 0,
-  "limit": 20
-}`}
-      />
-
-      <Endpoint
-        method="GET"
-        path="/api/memories/search?q=:query&limit=:limit"
+        path="/recall?agentId=:agentId&query=:query&limit=:limit"
         description="Search memories using semantic vector search. Returns results ranked by cosine similarity."
         response={`{
+  "success": true,
   "results": [
     {
       "id": "65f1a2b3c4d5e6f7a8b9c0d1",
-      "content": "The user prefers dark mode and uses VS Code.",
+      "text": "The user prefers dark mode and uses VS Code.",
       "score": 0.92,
-      "metadata": { "source": "onboarding" },
+      "tags": ["preference", "editor"],
       "createdAt": "2024-03-13T10:30:00.000Z"
     }
   ],
@@ -141,23 +124,29 @@ export default function ApiReferencePage() {
 
       <Endpoint
         method="GET"
-        path="/api/memories/:id"
-        description="Get a single memory by its ID."
+        path="/memories?agentId=:agentId&limit=:limit"
+        description="List all memories for an agent, sorted by creation date (newest first)."
         response={`{
-  "id": "65f1a2b3c4d5e6f7a8b9c0d1",
-  "content": "The user prefers dark mode and uses VS Code.",
-  "metadata": { "source": "onboarding", "agent": "assistant" },
-  "embedding": [0.012, -0.034, ...],
-  "createdAt": "2024-03-13T10:30:00.000Z"
+  "success": true,
+  "memories": [
+    {
+      "id": "65f1a2b3c4d5e6f7a8b9c0d1",
+      "text": "The user prefers dark mode...",
+      "tags": ["preference"],
+      "createdAt": "2024-03-13T10:30:00.000Z"
+    }
+  ],
+  "total": 142,
+  "agentId": "openclaw"
 }`}
       />
 
       <Endpoint
         method="DELETE"
-        path="/api/memories/:id"
+        path="/forget/:id"
         description="Delete a memory by its ID."
         response={`{
-  "deleted": true,
+  "success": true,
   "id": "65f1a2b3c4d5e6f7a8b9c0d1"
 }`}
       />
@@ -196,14 +185,19 @@ export default function ApiReferencePage() {
 
       <Endpoint
         method="GET"
-        path="/api/health"
+        path="/health"
         description="Check daemon health and connection status."
         response={`{
   "status": "ok",
-  "mongodb": "connected",
-  "voyage": "connected",
-  "uptime": 3600,
-  "memoryCount": 142
+  "timestamp": "2024-03-13T10:30:00.000Z",
+  "daemon": {
+    "uptime": 3600,
+    "version": "0.2.1"
+  },
+  "mongodb": {
+    "status": "connected",
+    "memoryCount": 142
+  }
 }`}
       />
     </Box>

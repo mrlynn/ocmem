@@ -184,25 +184,25 @@ export default function Hero() {
                 ${" "}
               </Box>
               <Box component="span" sx={{ color: "primary.main" }}>
-                npm install -g @openclaw-memory/cli
+                openclaw plugins install openclaw-memory
               </Box>
               <br />
               <Box component="span" sx={{ color: "text.secondary" }}>
                 ${" "}
               </Box>
               <Box component="span" sx={{ color: "primary.main" }}>
-                ocmem init
+                openclaw gateway start
               </Box>
               <br />
               <Box component="span" sx={{ color: "text.secondary" }}>
                 ${" "}
               </Box>
-              <Box component="span" sx={{ color: "primary.main" }}>
-                ocmem start
+              <Box component="span" sx={{ color: brand.springGreen, opacity: 0.7 }}>
+                # Daemon auto-starts with gateway
               </Box>
               <br />
               <Box component="span" sx={{ color: brand.springGreen }}>
-                {">"} Memory daemon running on port 3456
+                {">"} Memory daemon running on port 7654
               </Box>
               <br />
               <Box component="span" sx={{ color: brand.springGreen }}>

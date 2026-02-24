@@ -31,27 +31,24 @@ export default function ExamplesPage() {
             Store user preferences, decisions, and context so your assistant learns over time.
           </Typography>
           <CodeBlock language="javascript">{`// Store a preference
-await fetch('http://localhost:3456/api/memories', {
+await fetch('http://localhost:7654/remember', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    content: 'User prefers morning standup at 9:30 AM EST',
-    metadata: {
-      source: 'calendar-agent',
-      type: 'preference',
-      category: 'scheduling'
-    }
+    agentId: 'calendar-agent',
+    text: 'User prefers morning standup at 9:30 AM EST',
+    tags: ['preference', 'scheduling', 'calendar']
   })
 });
 
 // Later, recall scheduling preferences
 const response = await fetch(
-  'http://localhost:3456/api/memories/search?q=meeting+schedule+preferences&limit=5'
+  'http://localhost:7654/recall?agentId=calendar-agent&query=meeting+schedule+preferences&limit=5'
 );
 const { results } = await response.json();
 
 // Use memories as context for the AI
-const context = results.map(m => m.content).join('\\n');
+const context = results.map(m => m.text).join('\\n');
 const prompt = \`Given these user preferences:\\n\${context}\\n\\nSchedule the team meeting.\`;`}</CodeBlock>
         </CardContent>
       </Card>
@@ -68,23 +65,19 @@ const prompt = \`Given these user preferences:\\n\${context}\\n\\nSchedule the t
             Build a support agent that remembers past interactions and resolves issues faster.
           </Typography>
           <CodeBlock language="javascript">{`// After each support interaction, store a summary
-await fetch('http://localhost:3456/api/memories', {
+await fetch('http://localhost:7654/remember', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    content: 'Customer Jane (acme-corp) reported billing discrepancy on invoice #4521. Resolved by applying 15% discount. Customer was satisfied.',
-    metadata: {
-      source: 'support-agent',
-      customerId: 'acme-corp',
-      ticketId: 'SUP-892',
-      resolution: 'discount-applied'
-    }
+    agentId: 'support-agent',
+    text: 'Customer Jane (acme-corp) reported billing discrepancy on invoice #4521. Resolved by applying 15% discount. Customer was satisfied.',
+    tags: ['support', 'acme-corp', 'billing', 'resolved', 'SUP-892']
   })
 });
 
 // When a customer returns, pull their history
 const response = await fetch(
-  'http://localhost:3456/api/memories/search?q=acme-corp+billing+issues&limit=10'
+  'http://localhost:7654/recall?agentId=support-agent&query=acme-corp+billing+issues&limit=10'
 );
 const { results } = await response.json();
 
@@ -107,17 +100,13 @@ console.log(\`Found \${results.length} relevant memories for this customer\`);`}
           </Typography>
           <CodeBlock language="javascript">{`// Log workflow decisions
 async function logDecision(workflow, decision, reasoning) {
-  await fetch('http://localhost:3456/api/memories', {
+  await fetch('http://localhost:7654/remember', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      content: \`Workflow "\${workflow}": \${decision}. Reasoning: \${reasoning}\`,
-      metadata: {
-        source: 'workflow-engine',
-        workflow,
-        type: 'decision',
-        timestamp: new Date().toISOString()
-      }
+      agentId: 'workflow-engine',
+      text: \`Workflow "\${workflow}": \${decision}. Reasoning: \${reasoning}\`,
+      tags: ['decision', 'workflow', workflow, new Date().toISOString().split('T')[0]]
     })
   });
 }
@@ -129,18 +118,16 @@ await logDecision(
   'All integration tests passed and change is config-only'
 );
 
-// Ask the memory chat about past workflow decisions
-const chatResponse = await fetch('http://localhost:3456/api/chat', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    message: 'Why was staging skipped in recent deployments?',
-    memoryLimit: 10
-  })
-});
-const { answer, sources } = await chatResponse.json();
-console.log(answer);
-// "Staging was skipped because all integration tests passed and the change was config-only..."`}</CodeBlock>
+// Search past workflow decisions
+const searchResponse = await fetch(
+  'http://localhost:7654/recall?agentId=workflow-engine&query=staging+deployment+decisions&limit=10'
+);
+const { results } = await searchResponse.json();
+
+// Analyze patterns in past decisions
+results.forEach(memory => {
+  console.log(\`\${memory.text} (score: \${memory.score})\`);
+});`}</CodeBlock>
         </CardContent>
       </Card>
 
@@ -156,23 +143,26 @@ console.log(answer);
             Use the chat endpoint to ask natural language questions about your agent&apos;s memory
             store.
           </Typography>
-          <CodeBlock language="javascript">{`// Simple chat wrapper
-async function askMemory(question) {
-  const response = await fetch('http://localhost:3456/api/chat', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: question, memoryLimit: 5 })
-  });
-  return response.json();
+          <CodeBlock language="javascript">{`// Simple memory recall helper
+async function askMemory(agentId, question, limit = 5) {
+  const response = await fetch(
+    \`http://localhost:7654/recall?agentId=\${agentId}&query=\${encodeURIComponent(question)}&limit=\${limit}\`
+  );
+  const { results } = await response.json();
+  return results;
 }
 
 // Ask questions about stored knowledge
-const result = await askMemory("What are the user's coding preferences?");
-console.log(result.answer);
-// "The user prefers VS Code with dark mode, uses TypeScript,
-//  and follows the Airbnb style guide..."
+const memories = await askMemory("assistant", "coding preferences");
 
-console.log(\`Based on \${result.sources.length} memories\`);`}</CodeBlock>
+// Use memories as context for your LLM
+const context = memories.map(m => m.text).join('\\n\\n');
+console.log(\`Found \${memories.length} relevant memories:\`);
+console.log(context);
+
+// Pass to your LLM for a natural answer
+// "The user prefers VS Code with dark mode, uses TypeScript,
+//  and follows the Airbnb style guide..."`}</CodeBlock>
         </CardContent>
       </Card>
     </Box>

@@ -17,6 +17,9 @@ import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import ApiIcon from "@mui/icons-material/Api";
 import CodeIcon from "@mui/icons-material/Code";
 import WebhookIcon from "@mui/icons-material/Webhook";
+import AccountTreeIcon from "@mui/icons-material/AccountTree";
+import ArchitectureIcon from "@mui/icons-material/Architecture";
+import DashboardIcon from "@mui/icons-material/Dashboard";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,6 +28,9 @@ import { useState } from "react";
 const sidebarItems = [
   { label: "Overview", href: "/docs", icon: <MenuBookIcon /> },
   { label: "Getting Started", href: "/docs/getting-started", icon: <RocketLaunchIcon /> },
+  { label: "How It Works", href: "/docs/how-it-works", icon: <AccountTreeIcon /> },
+  { label: "Architecture", href: "/docs/architecture", icon: <ArchitectureIcon /> },
+  { label: "Web Dashboard", href: "/docs/dashboard", icon: <DashboardIcon /> },
   { label: "API Reference", href: "/docs/api", icon: <ApiIcon /> },
   { label: "Hooks", href: "/docs/hooks", icon: <WebhookIcon /> },
   { label: "Examples", href: "/docs/examples", icon: <CodeIcon /> },
